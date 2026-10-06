@@ -87,6 +87,7 @@ The character's materials are artistic interpretations, not measurements of a ph
 .
 ├── README.md
 ├── README.en.md
+├── CONTRIBUTING.md
 ├── LICENSE
 ├── NOTICE
 ├── ASSET-LICENSE.md
@@ -104,11 +105,13 @@ The character's materials are artistic interpretations, not measurements of a ph
 │       ├── cover-4x3.png
 │       └── cover-16x9.png
 ├── scripts/
+│   ├── build_site.py              Allowlisted project-site build
 │   └── release_check.py          Public-file and sensitive-information checks
 ├── tests/
 │   ├── test_journey.py
 │   ├── test_audio.py
 │   ├── test_hero.py
+│   ├── test_site.py
 │   └── test_release_check.py
 ├── .github/workflows/           Continuous integration
 └── skills/huawei-phone-journey/
@@ -148,6 +151,8 @@ All runtime code and data needed by the skill live inside the skill directory, w
 **Can I use it commercially or publish it again?** The author's original code and documents are available under the Mulan Permissive Software License, Version 2. Phone images, fonts, audio samples and trademarks remain subject to their own rights and conditions. See [Asset Licensing (Chinese)](ASSET-LICENSE.md).
 
 **Can I expand the catalog or adapt it to another product history?** You can adjust the catalog, journey list, timeline and style mappings. Retain precise identities, sources, date meanings and uncertainty markers, then check both the data and the actual rendering.
+
+For catalog corrections and code contributions, read the [contribution guide (Chinese)](CONTRIBUTING.md) and include public sources or reproduction steps.
 
 ## Author
 

@@ -87,6 +87,7 @@ npm run render
 .
 ├── README.md
 ├── README.en.md
+├── CONTRIBUTING.md
 ├── LICENSE
 ├── NOTICE
 ├── ASSET-LICENSE.md
@@ -104,11 +105,13 @@ npm run render
 │       ├── cover-4x3.png
 │       └── cover-16x9.png
 ├── scripts/
+│   ├── build_site.py              成品网站白名单构建
 │   └── release_check.py          公开文件与敏感信息检查
 ├── tests/
 │   ├── test_journey.py
 │   ├── test_audio.py
 │   ├── test_hero.py
+│   ├── test_site.py
 │   └── test_release_check.py
 ├── .github/workflows/           持续集成
 └── skills/huawei-phone-journey/
@@ -148,6 +151,8 @@ npm run render
 **能否商用或重新发布？** 作者原创代码与文档按木兰宽松许可证第2版使用。手机图片、字体、音源和商标另受其权利条件约束，见[素材许可范围](ASSET-LICENSE.md)。
 
 **能否扩充资料或改成其他产品史？** 可以调整目录、入片名单、时间轴和风格映射。保留精确身份、来源、日期语义和不确定标记，再检查数据与实际渲染。
+
+资料纠错与代码贡献请先阅读[贡献指南](CONTRIBUTING.md)，并附可公开的来源与复现步骤。
 
 ## 作者
 
