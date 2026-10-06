@@ -1,0 +1,11 @@
+{
+  "说明": "仅为用户音源配置格式示例，不含音频。文件须位于本配置目录内；根MIDI和力度须按自己的有权使用样本填写。",
+  "samples": [
+    {"instrument": "钢琴", "file": "钢琴.wav", "rootMidi": 60, "velocity": 80},
+    {"instrument": "电钢琴", "file": "电钢琴.wav", "rootMidi": 60, "velocity": 80},
+    {"instrument": "暖垫", "file": "暖垫.wav", "rootMidi": 60, "velocity": 80},
+    {"instrument": "晶体", "file": "晶体.wav", "rootMidi": 60, "velocity": 80},
+    {"instrument": "弦乐", "file": "弦乐.wav", "rootMidi": 60, "velocity": 80}
+  ],
+  "drums": [{"file": "鼓一.wav"}, {"file": "鼓二.wav"}, {"file": "鼓三.wav"}]
+}

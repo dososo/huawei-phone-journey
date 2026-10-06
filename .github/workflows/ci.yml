@@ -1,0 +1,23 @@
+name: 开源代码与脱敏检查
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 安装测试依赖
+        run: python -m pip install pillow numpy scipy soundfile
+      - name: 检查资料、时间线及发布内容
+        run: |
+          python skills/huawei-phone-journey/scripts/journey.py check
+          python scripts/release_check.py
+          python -m unittest discover -s tests -v
+          for source in skills/huawei-phone-journey/src/*.js; do node --check "$source"; done

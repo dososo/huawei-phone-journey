@@ -1,0 +1,15 @@
+{
+  "name": "huawei-phone-journey",
+  "version": "1.0.0",
+  "private": true,
+  "description": "角色穿过华为手机设计史的九章动画与本地复现工具",
+  "license": "MulanPSL-2.0",
+  "scripts": {
+    "check": "hyperframes check output/project",
+    "render": "hyperframes render output/project --output output/journey.mp4 --fps 30"
+  },
+  "devDependencies": {
+    "gsap": "3.14.2",
+    "hyperframes": "0.8.135"
+  }
+}

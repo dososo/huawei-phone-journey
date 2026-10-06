@@ -1,0 +1,88 @@
+{
+  "models": [
+    {
+      "id": "huawei-u326-a3fce95a",
+      "name": "U326",
+      "series": "Early code",
+      "year": 2004,
+      "month": 11,
+      "mainline": true,
+      "productionEligible": false,
+      "tourEligible": false,
+      "imageTier": "待核或缺图",
+      "release": {
+        "year": 2004,
+        "month": 11,
+        "day": null,
+        "inferredYear": false,
+        "inferredMonth": false,
+        "inferredDay": null,
+        "confidence": "中",
+        "displayLabel": "2004年11月 · 冲突",
+        "rangeDetails": {
+          "earliest": [
+            2004,
+            1
+          ],
+          "latest": [
+            2010,
+            1
+          ]
+        },
+        "status": "待复核",
+        "sources": [
+          {
+            "url": "https://zh.wikipedia.org/wiki/%E5%8D%8E%E4%B8%BA%E6%99%BA%E8%83%BD%E6%89%8B%E6%9C%BA%E5%9E%8B%E5%8F%B7%E5%88%97%E8%A1%A8",
+            "semantic": "宣布",
+            "grade": "C",
+            "inherited": true
+          },
+          {
+            "url": "https://product.cnmo.com/cell_phone/index61385.shtml",
+            "semantic": "上市",
+            "grade": "B",
+            "inherited": false
+          },
+          {
+            "url": "https://zh.wikipedia.org/wiki/华为智能手机型号列表",
+            "semantic": "候选年",
+            "grade": "C",
+            "inherited": true
+          },
+          {
+            "url": "https://zh.wikipedia.org/wiki/华为智能手机型号列表",
+            "semantic": "宣布",
+            "grade": "C",
+            "inherited": true
+          },
+          {
+            "url": "https://zh.wikipedia.org/wiki/%E5%8D%8E%E4%B8%BA%E6%99%BA%E8%83%BD%E6%89%8B%E6%9C%BA%E5%9E%8B%E5%8F%B7%E5%88%97%E8%A1%A8",
+            "semantic": "候选年",
+            "grade": "C",
+            "inherited": true
+          }
+        ],
+        "basis": "排序年月保留来源记录的推断与冲突标识；公开来源候选不等于独立核定的全球首次发布日。"
+      },
+      "style": {
+        "color": "#90a8a8",
+        "background": "#ffffff",
+        "kind": "lcd",
+        "colorName": "图像风格"
+      },
+      "heroScale": 0.35,
+      "image": {
+        "path": "assets/phones/huawei-u326-a3fce95a.png",
+        "url": "",
+        "pageUrl": "",
+        "width": null,
+        "height": null,
+        "displayLimitPx": 600,
+        "rights": "原来源保留版权，本仓库仅提供来源链接，不包含图像文件。"
+      }
+    }
+  ],
+  "journeyIds": [
+    "huawei-u326-a3fce95a"
+  ]
+}
