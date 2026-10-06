@@ -26,7 +26,6 @@ python3 scripts/journey.py serve
 python3 scripts/journey.py fetch --help
 python3 scripts/journey.py import-images --help
 python3 scripts/journey.py build --help
-python3 scripts/audio.py --help
 ```
 
 普通网页无需 npm，`serve` 默认只绑定本机的 8780 端口。下载和导入图片另需 Pillow；`fetch` 使用 `--ids` 或 `--all` 选择记录，并以 `--yes` 显式开始获取。`import-images --from` 读取用户目录，`--map` 可提供 ID 到输入目录内相对路径的 JSON。
@@ -52,6 +51,11 @@ python3 scripts/audio.py --help
 图片保持完整原幅比例与显示上限，不去水印，不把局部图或身份不明的变体当成完整本型号。媒介映射是创意表达，不是手机材料或屏幕技术事实。
 
 音频脚本另需 NumPy、SciPy 与 SoundFile。用 `--bank` 显式指定用户有权使用的样本库 JSON，并用 `--out` 指定输出。完整重演需要钢琴、电钢琴、暖垫、晶体、弦乐五类各至少一份样本和三个鼓片段；样本文件必须位于配置文件目录内。
+
+```bash
+python3 -m pip install numpy scipy soundfile
+python3 scripts/audio.py --help
+```
 
 配置字段见 [examples/audio-bank.json](examples/audio-bank.json)。模板不含音频，根音与力度必须对应用户自己的样本。
 

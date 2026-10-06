@@ -30,10 +30,16 @@ python3 scripts/journey.py serve
 python3 -m pip install pillow
 python3 scripts/journey.py fetch --help
 python3 scripts/journey.py import-images --help
-python3 scripts/audio.py --help
 ```
 
 下载成功不等于取得版权许可；来源不可访问或身份不明时保留缺图状态。详见[使用与复现](docs/使用与复现.md)和[素材许可范围](ASSET-LICENSE.md)。
+
+需要重演配乐时，再安装音频依赖并查看音源配置入口：
+
+```bash
+python3 -m pip install numpy scipy soundfile
+python3 scripts/audio.py --help
+```
 
 需要通过 HyperFrames 检查或导出时，可在技能目录安装可选依赖：
 
@@ -75,6 +81,7 @@ npm run render
 ├── tests/
 │   ├── test_journey.py
 │   ├── test_audio.py
+│   ├── test_hero.py
 │   └── test_release_check.py
 ├── .github/workflows/           持续集成
 └── skills/huawei-phone-journey/
