@@ -1,10 +1,26 @@
+**中文** · [English](README.en.md)
+
 # 华为手机九章游历
 
 让同一个飞行角色穿过手机图片画板，随设计风格在玻璃、金属、贝母与纹理之间变换。
 
+[![穿过华为手机的22年：点击观看九章成片](site/assets/cover-16x9.png)](https://dososo.github.io/huawei-phone-journey/watch.html)
+
+[观看成片](https://dososo.github.io/huawei-phone-journey/watch.html) · [封面与六平台文案](https://dososo.github.io/huawei-phone-journey/promotion.html) · [1106条资料目录](https://dososo.github.io/huawei-phone-journey/catalog.html) · [创作技能源码](skills/huawei-phone-journey/SKILL.md)
+
 这是一套可本地运行的网页动画与创作技能。当前资料目录包含 **1106 条记录**，九章时间轴选择 **451 份机型影像节点**，时长 **12 分 52.7 秒**。记录可能包含版本、别名、日期推断与待核项；这些数字不代表独立型号全部收齐，也不代表所有图片均为高清或已获再分发授权。
 
-仓库提供源码、来源索引、时间轴和乐谱事件。真实手机图片、商业采样和已制作影片不随源码提供。未导入图片时，页面会明确标注缺图；它仍可用于检查角色、布局和时间轴。
+成片、最终试听和三种比例封面通过作品网站与 Release 提供；仓库同时开放源码、来源索引、时间轴和乐谱事件。完整手机原图库与商业采样库不随源码分发。本地源码预览未导入图片时会明确标注缺图，仍可用于检查角色、布局和时间轴。
+
+## 观看与发布素材
+
+- [作品首页](https://dososo.github.io/huawei-phone-journey/)：作品简介与各入口。
+- [九章成片](https://dososo.github.io/huawei-phone-journey/watch.html)：451份影像入片，9章，12:52.7；资料目录中的其余记录未全部入片。
+- [封面与文案](https://dososo.github.io/huawei-phone-journey/promotion.html)：3:4、4:3、16:9封面及六平台成品文案；也可阅读[文案文档](docs/发布文案.md)。
+- [资料目录](https://dososo.github.io/huawei-phone-journey/catalog.html)：1106条记录，保留来源、日期推断与待核标记。
+- [下载完整影片](https://github.com/dososo/huawei-phone-journey/releases/download/v1.0.0/huawei-phone-journey-full.mp4) · [最终试听](https://github.com/dososo/huawei-phone-journey/releases/download/v1.0.0/huawei-phone-journey-audio-preview.mp3)。
+
+观看和试听无需安装开发环境。公开成品不意味着其中手机图片、音源或商标获得统一再使用许可，详见[素材许可范围](ASSET-LICENSE.md)。
 
 ## 快速开始
 
@@ -70,12 +86,23 @@ npm run render
 ```text
 .
 ├── README.md
+├── README.en.md
 ├── LICENSE
 ├── NOTICE
 ├── ASSET-LICENSE.md
 ├── docs/
 │   ├── 设计与原理.md
-│   └── 使用与复现.md
+│   ├── 使用与复现.md
+│   └── 发布文案.md
+├── site/
+│   ├── index.html               作品首页
+│   ├── watch.html               成片与试听
+│   ├── promotion.html           封面与文案
+│   ├── catalog.html             资料目录
+│   └── assets/
+│       ├── cover-3x4.png
+│       ├── cover-4x3.png
+│       └── cover-16x9.png
 ├── scripts/
 │   └── release_check.py          公开文件与敏感信息检查
 ├── tests/
@@ -108,11 +135,11 @@ npm run render
         └── audio-bank.json      用户音源配置模板，不含音频
 ```
 
-技能所需的运行代码和数据都位于技能目录内，可完整复制该目录使用。运行产生的图片、音频、构建目录与影片属于本地输出，不应连同私人路径、密钥或未获许可的素材提交到源码仓库。
+技能所需的运行代码和数据都位于技能目录内，可完整复制该目录使用。`site` 保存公开作品页面与封面，影片和试听作为 Release 附件。自行运行产生的图片、音源库、音频和构建目录属于本地文件；不要将私人路径、密钥或未获许可的素材提交到源码仓库。
 
 ## 常见问题
 
-**为什么手机画板是缺图提示？** 真实手机图片没有随仓库分发。导入可用原图后，网页才会显示相应手机；缺图状态用于说明事实，不能作为真实外观交付。
+**为什么本地预览的手机画板是缺图提示？** 公开成片可直接观看，但用于重建画板的完整手机原图库没有随技能分发。导入可用原图后，本地页面才会显示相应手机；缺图状态用于说明事实，不能作为真实外观交付。
 
 **能否还原已经发布的影片？** 可以重建结构和动画逻辑，但这里不承诺原片字节复现。图片、音源、字体、浏览器和导出环境不同都会改变最终结果。
 

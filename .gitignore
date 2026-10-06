@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .venv/
 node_modules/
+/output/
 skills/huawei-phone-journey/assets/
 skills/huawei-phone-journey/output/
 skills/huawei-phone-journey/renders/
@@ -10,4 +11,3 @@ skills/huawei-phone-journey/renders/
 .env
 .env.*
 local-*
-

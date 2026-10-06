@@ -1,9 +1,11 @@
-"""只读发布守卫：白名单文本、敏感信息与实际 Git 索引/跟踪文件双检。"""
+"""只读发布守卫：精确文件白名单、敏感信息与 Git 索引/跟踪文件双检。"""
 import argparse
 import html
 import json
 import re
+import struct
 import subprocess
+import zlib
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote
 
@@ -13,6 +15,9 @@ ROOT_NAMES = {"README", "LICENSE", "NOTICE", "ASSET-LICENSE", "CONTRIBUTING", "C
 TEXT_SUFFIXES = {".md", ".txt", ".rst", ".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".html", ".css", ".json", ".yml", ".yaml", ".toml", ".sh", ".command"}
 LOCAL_DIRS = {".git", "node_modules", "output", "输出", ".hyperframes", ".thumbnails", ".waveform-cache", "__pycache__", "snapshots", "screenshots", "cache", "logs", "log", "截图", "截屏", "核验", "修订前"}
 PRIVATE_PARTS = {"reference", "references", "private", "cache", "logs", "log", "snapshots", "screenshots", "media", "截图", "截屏", "核验", "修订前"}
+PNG_FILES = {"site/assets/cover-3x4.png", "site/assets/cover-4x3.png", "site/assets/cover-16x9.png"}
+PNG_CHUNKS = {b"IHDR", b"IDAT", b"IEND", b"sRGB", b"gAMA", b"cHRM", b"pHYs", b"iCCP"}
+SITE_HTML = {"site/index.html", "site/watch.html", "site/promotion.html", "site/catalog.html"}
 RULES = {
     "个人绝对路径": r"(?:/|\\/)(?:Users|home|private[/]var|var[/]folders|Volumes)(?:/|\\/)|[A-Za-z]:[\\/]+(?:Users|Documents and Settings)[\\/]+|file[:][/][/]|~[/]",
     "凭据或私钥": r"\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16})\b|-----BEGIN (?:[A-Z0-9]+ )?PRIVATE KEY-----|\bBearer[ \t]+[A-Za-z0-9._~+/-]{16,}|\beyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\b",
@@ -29,6 +34,8 @@ def allowed(name):
     p = PurePosixPath(name)
     if p.is_absolute() or ".." in p.parts or any(x.lower() in PRIVATE_PARTS for x in p.parts):
         return False
+    if name == "README.en.md" or name in SITE_HTML or name in PNG_FILES:
+        return True
     if len(p.parts) == 1:
         return name == ".gitignore" or (p.stem in ROOT_NAMES and p.suffix in {"", ".md", ".txt"})
     if p.suffix not in TEXT_SUFFIXES:
@@ -105,6 +112,57 @@ def text_issues(data, suffix, words):
     return found
 
 
+def png_issues(data):
+    """检查封面 PNG 的结构和 CRC；不替代像素、ICC 内容或素材许可审查。"""
+    if len(data) > LIMIT:
+        return {"超过5MiB"}
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return {"PNG签名无效"}
+    offset, seen, image_bytes, image_closed = 8, set(), 0, False
+    while offset < len(data):
+        if len(data) - offset < 12:
+            return {"PNG块截断"}
+        length, kind = struct.unpack_from(">I4s", data, offset)
+        end = offset + 12 + length
+        if end > len(data):
+            return {"PNG块截断"}
+        if kind not in PNG_CHUNKS:
+            return {"PNG含禁用或未知块"}
+        payload = data[offset + 8:end - 4]
+        if zlib.crc32(kind + payload) & 0xffffffff != struct.unpack_from(">I", data, end - 4)[0]:
+            return {"PNG块CRC错误"}
+        if (offset == 8 and kind != b"IHDR") or (kind != b"IDAT" and kind in seen):
+            return {"PNG类型或结构无效"}
+        if kind == b"IHDR":
+            if length != 13:
+                return {"PNG类型或结构无效"}
+            width, height, depth, color, compression, filtering, interlace = struct.unpack(">IIBBBBB", payload)
+            depths = {0: {1, 2, 4, 8, 16}, 2: {8, 16}, 4: {8, 16}, 6: {8, 16}}
+            if not width or not height or depth not in depths.get(color, set()) or compression or filtering or interlace not in {0, 1}:
+                return {"PNG类型或结构无效"}
+        elif kind == b"IDAT":
+            if image_closed:
+                return {"PNG类型或结构无效"}
+            image_bytes += length
+        elif kind == b"IEND":
+            if length or not image_bytes:
+                return {"PNG图像数据缺失或结构无效"}
+            return {"PNG尾随数据"} if end != len(data) else set()
+        else:
+            if b"IDAT" in seen:
+                image_closed = True
+            lengths = {b"sRGB": 1, b"gAMA": 4, b"cHRM": 32, b"pHYs": 9}
+            if kind in lengths and length != lengths[kind]:
+                return {"PNG类型或结构无效"}
+        seen.add(kind)
+        offset = end
+    return {"PNG缺少结束块"}
+
+
+def file_issues(data, name, words):
+    return png_issues(data) if name in PNG_FILES else text_issues(data, PurePosixPath(name).suffix, words)
+
+
 def git(root, *args):
     return subprocess.run(["git", "-C", str(root), *args], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 
@@ -137,7 +195,7 @@ def check(root, words):
     for name, mode_stage, oid in sorted(entries):
         issues = sensitive(name, words)
         if not allowed(name):
-            issues.add("不在公开文本白名单")
+            issues.add("不在公开文件白名单")
         path = root / name
         if mode_stage is not None:
             mode, stage = mode_stage
@@ -153,14 +211,14 @@ def check(root, words):
                 if blob.returncode:
                     issues.add("索引字节不可读取")
                 else:
-                    issues.update(text_issues(blob.stdout, path.suffix, words))
+                    issues.update(file_issues(blob.stdout, name, words))
         if path.is_symlink():
             issues.add("符号链接")
         elif path.is_file():
             if path.stat().st_size > LIMIT:
                 issues.add("超过5MiB")
             else:
-                issues.update(text_issues(path.read_bytes(), path.suffix, words))
+                issues.update(file_issues(path.read_bytes(), name, words))
         if issues:
             failures.append({"文件": "[敏感路径已隐藏]" if sensitive(name, words) else name, "类别": sorted(issues)})
     if not entries:
