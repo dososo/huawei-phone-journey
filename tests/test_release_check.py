@@ -1,11 +1,9 @@
 """临时虚构仓库验证发布边界；不读取制作目录或真实凭据。"""
 import importlib.util
 import json
-import struct
 import subprocess
 import tempfile
 import unittest
-import zlib
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "release_check.py"
@@ -14,13 +12,7 @@ guard = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(guard)
 
 
-def png_chunk(kind, payload=b""):
-    return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", zlib.crc32(kind + payload) & 0xffffffff)
-
-
-def clean_png(extra=b""):
-    header = struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0)
-    return b"\x89PNG\r\n\x1a\n" + png_chunk(b"IHDR", header) + extra + png_chunk(b"IDAT", zlib.compress(b"\0\xff\xff\xff")) + png_chunk(b"IEND")
+PREVIEW_BYTES = (SCRIPT.parent.parent / "site/assets/film-preview.jpg").read_bytes()
 
 
 class ReleaseCheckTests(unittest.TestCase):
@@ -142,71 +134,56 @@ class ReleaseCheckTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             guard.extra_words(table)
 
-    def test_exact_cover_paths_accept_clean_png_before_and_after_git_init(self):
-        for name in sorted(guard.PNG_FILES):
-            self.put(name, clean_png())
-        self.assertEqual(guard.check(self.root, [])["状态"], "通过")
-        self.init()
-        self.git("add", "site")
-        self.assertEqual(guard.check(self.root, [])["状态"], "通过")
-        for name in {"site/assets/other.png", "site/cover-3x4.png", "docs/cover-3x4.png", "site/assets/cover-3x4.jpg"}:
+    def test_private_publishing_paths_are_denied_before_and_after_git_init(self):
+        for name in sorted(guard.PRIVATE_FILES):
             with self.subTest(name=name):
                 self.assertFalse(guard.allowed(name))
-        self.put("site/assets/other.png", clean_png())
-        self.git("add", "site/assets/other.png")
+        self.put("docs/发布文案.md", "仅供私用的虚构发布资料")
+        self.assertIn("不在公开文件白名单", self.categories(guard.check(self.root, [])))
+        self.init()
+        self.git("add", "docs/发布文案.md")
         self.assertIn("不在公开文件白名单", self.categories(guard.check(self.root, [])))
 
-    def test_png_metadata_c2pa_and_unknown_chunks_are_rejected(self):
-        for kind in {b"eXIf", b"tEXt", b"iTXt", b"zTXt", b"caBX", b"abcd"}:
-            with self.subTest(kind=kind):
-                self.put("site/assets/cover-3x4.png", clean_png(png_chunk(kind, b"fictional")))
-                self.assertIn("PNG含禁用或未知块", self.categories(guard.check(self.root, [])))
-
-    def test_png_staged_bytes_and_worktree_are_both_checked(self):
+    def test_only_exact_approved_film_preview_is_accepted(self):
+        self.put(guard.PREVIEW_FILE, PREVIEW_BYTES)
+        self.assertEqual(guard.check(self.root, [])["状态"], "通过")
         self.init()
-        name = "site/assets/cover-4x3.png"
-        path = self.put(name, clean_png(png_chunk(b"tEXt", b"fictional")))
-        self.git("add", name)
-        path.write_bytes(clean_png())
-        self.assertIn("PNG含禁用或未知块", self.categories(guard.check(self.root, [])))
-        self.git("add", name)
-        path.write_bytes(clean_png(png_chunk(b"caBX", b"fictional")))
-        self.assertIn("PNG含禁用或未知块", self.categories(guard.check(self.root, [])))
+        self.git("add", guard.PREVIEW_FILE)
+        self.assertEqual(guard.check(self.root, [])["状态"], "通过")
+        for name in {"site/assets/other.jpg", "site/film-preview.jpg", "docs/film-preview.jpg", "site/assets/film-preview.png"}:
+            with self.subTest(name=name):
+                self.assertFalse(guard.allowed(name))
 
-    def test_png_fake_trailing_and_oversized_bytes_are_rejected(self):
-        name = "site/assets/cover-16x9.png"
-        samples = [(b"fictional image", "PNG签名无效"),
-                   (b"\x89PNG\r\n\x1a\n", "PNG缺少结束块"),
-                   (clean_png() + b"extra", "PNG尾随数据"),
-                   (clean_png() + b"x" * guard.LIMIT, "超过5MiB")]
-        for data, category in samples:
+    def test_preview_metadata_and_trailing_changes_are_rejected(self):
+        samples = [PREVIEW_BYTES[:2] + b"\xff\xfe\x00\x0bfictional" + PREVIEW_BYTES[2:],
+                   PREVIEW_BYTES + b"fictional metadata"]
+        for raw in samples:
+            with self.subTest(size=len(raw)):
+                self.put(guard.PREVIEW_FILE, raw)
+                self.assertIn("预览图与已核验影片帧不符", self.categories(guard.check(self.root, [])))
+
+    def test_preview_staged_bytes_and_worktree_are_both_checked(self):
+        self.init()
+        path = self.put(guard.PREVIEW_FILE, PREVIEW_BYTES + b"fictional")
+        self.git("add", guard.PREVIEW_FILE)
+        path.write_bytes(PREVIEW_BYTES)
+        self.assertIn("预览图与已核验影片帧不符", self.categories(guard.check(self.root, [])))
+        self.git("add", guard.PREVIEW_FILE)
+        path.write_bytes(PREVIEW_BYTES + b"fictional")
+        self.assertIn("预览图与已核验影片帧不符", self.categories(guard.check(self.root, [])))
+
+    def test_preview_fake_and_oversized_bytes_are_rejected(self):
+        for raw, category in [(b"fictional image", "预览图与已核验影片帧不符"),
+                              (PREVIEW_BYTES + b"x" * guard.LIMIT, "超过5MiB")]:
             with self.subTest(category=category):
-                self.put(name, data)
+                self.put(guard.PREVIEW_FILE, raw)
                 self.assertIn(category, self.categories(guard.check(self.root, [])))
         self.init()
-        self.git("add", name)
-        self.put(name, clean_png())
+        self.git("add", guard.PREVIEW_FILE)
+        self.put(guard.PREVIEW_FILE, PREVIEW_BYTES)
         self.assertIn("超过5MiB", self.categories(guard.check(self.root, [])))
 
-    def test_png_truncated_crc_missing_image_and_duplicate_header_are_rejected(self):
-        data = clean_png()
-        samples = [(data[:-1], "PNG块截断"),
-                   (data[:-1] + bytes([data[-1] ^ 1]), "PNG块CRC错误"),
-                   (data[:33] + png_chunk(b"IEND"), "PNG图像数据缺失或结构无效"),
-                   (clean_png(data[8:33]), "PNG类型或结构无效")]
-        for raw, category in samples:
-            with self.subTest(category=category):
-                self.assertIn(category, guard.png_issues(raw))
-
-    def test_png_whitelisted_color_chunks_are_accepted(self):
-        chunks = [png_chunk(b"sRGB", b"\0"), png_chunk(b"gAMA", struct.pack(">I", 45455)),
-                  png_chunk(b"cHRM", bytes(32)), png_chunk(b"pHYs", struct.pack(">IIB", 100, 100, 1)),
-                  png_chunk(b"iCCP", b"fictional\0\0" + zlib.compress(b"profile"))]
-        for extra in chunks:
-            with self.subTest(extra=extra[:8]):
-                self.assertEqual(guard.png_issues(clean_png(extra)), set())
-
-    def test_english_readme_and_four_site_pages_are_exact_and_still_private_checked(self):
+    def test_english_readme_and_three_site_pages_are_exact_and_still_private_checked(self):
         self.put("README.en.md", "Public description")
         for name in sorted(guard.SITE_HTML):
             self.put(name, '<html lang="zh"><button>中文 / English</button></html>')

@@ -5,13 +5,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE_FILES = [
-    "index.html", "watch.html", "promotion.html", "catalog.html", "edition.json",
-    "assets/cover-3x4.png", "assets/cover-4x3.png", "assets/cover-16x9.png",
+    "index.html", "watch.html", "catalog.html", "edition.json",
+    "assets/film-preview.jpg",
 ]
 
 
 def build(destination):
-    expected = set(SITE_FILES) | {"data/catalog.json", "copy.md"}
+    expected = set(SITE_FILES) | {"data/catalog.json"}
     if destination.exists():
         if any(p.is_symlink() or (p.is_file() and p.relative_to(destination).as_posix() not in expected) for p in destination.rglob("*")):
             raise ValueError("目标目录含非公开文件或符号链接；请另选空目录。")
@@ -21,8 +21,7 @@ def build(destination):
         shutil.copyfile(ROOT / "site" / name, target)
     (destination / "data").mkdir(exist_ok=True)
     shutil.copyfile(ROOT / "skills/huawei-phone-journey/data/catalog.json", destination / "data/catalog.json")
-    shutil.copyfile(ROOT / "docs/发布文案.md", destination / "copy.md")
-    print("已构建10个公开文件；没有复制原图库、音源库或阶段目录。")
+    print("已构建6个公开文件；没有复制私人发布资料、原图库、音源库或阶段目录。")
 
 
 if __name__ == "__main__":

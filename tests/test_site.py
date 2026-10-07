@@ -16,15 +16,13 @@ spec.loader.exec_module(module)
 class Page(HTMLParser):
     def __init__(self, text):
         super().__init__()
-        self.links, self.ids, self.copies = [], set(), []
+        self.links, self.ids = [], set()
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if "id" in attrs:
             self.ids.add(attrs["id"])
-        if "data-copy" in attrs:
-            self.copies.append(attrs["data-copy"])
         for key in ("href", "src", "poster"):
             if key in attrs:
                 self.links.append(attrs[key])
@@ -44,9 +42,9 @@ class SiteTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             module.build(out)
-            expected = set(module.SITE_FILES) | {"data/catalog.json", "copy.md"}
+            expected = set(module.SITE_FILES) | {"data/catalog.json"}
             self.assertEqual({p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()}, expected)
-            for name in module.SITE_FILES[:4]:
+            for name in (name for name in module.SITE_FILES if name.endswith(".html")):
                 page = Page((out / name).read_text())
                 for address in page.links:
                     url = urlsplit(address)
@@ -77,18 +75,23 @@ class SiteTest(unittest.TestCase):
         self.assertEqual(edition["fps"], 60)
         self.assertTrue(all(c["video"] in page.links for c in edition["chapters"]))
 
-    def test_six_platform_copy_targets_and_creative_intent_are_preserved(self):
-        text = (ROOT / "site/promotion.html").read_text()
-        page = Page(text)
-        self.assertEqual(len(page.copies), 18)
-        self.assertEqual(len(set(page.copies)), 18)
-        self.assertTrue(set(page.copies) <= page.ids)
-        self.assertEqual(text.count("追流量"), 5)
-        self.assertEqual(text.count("rather than chase views"), 2)
-        self.assertEqual(text.count("九章路线："), 3)
-        self.assertEqual(text.count("10:46"), 2)
-        self.assertIn("pre-split Honor", text)
-        self.assertIn("48", text)
+    def test_private_publishing_materials_are_not_deployed_or_linked(self):
+        private = {"promotion.html", "copy.md", "发布文案.md", "social-copy.md",
+                   "cover-3x4.png", "cover-4x3.png", "cover-16x9.png"}
+        public_text = ["README.md", "README.en.md", "ASSET-LICENSE.md", "NOTICE",
+                       "CHANGELOG.md", "docs/使用与复现.md", "docs/新版说明.md"]
+        public_text += ["site/" + name for name in module.SITE_FILES if name.endswith(".html")]
+        for name in public_text:
+            with self.subTest(name=name):
+                text = (ROOT / name).read_text()
+                self.assertFalse(any(part in text for part in private))
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            module.build(out)
+            self.assertEqual(len([p for p in out.rglob("*") if p.is_file()]), 6)
+            self.assertFalse(any(p.name in private for p in out.rglob("*")))
+        for name in ("site/index.html", "site/watch.html"):
+            self.assertIn("assets/film-preview.jpg", Page((ROOT / name).read_text()).links)
 
 
 if __name__ == "__main__":

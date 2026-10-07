@@ -4,21 +4,20 @@
 
 一个角色，穿过2004—2026的22年手机设计。**华为＋分家前荣耀历代手机全景，九章重制版。**
 
-[![穿过华为手机的22年：点击观看九章成片](site/assets/cover-16x9.png)](https://dososo.github.io/huawei-phone-journey/watch.html)
+[![穿过华为手机的22年：点击观看九章成片](site/assets/film-preview.jpg)](https://dososo.github.io/huawei-phone-journey/watch.html)
 
-[观看成片](https://dososo.github.io/huawei-phone-journey/watch.html) · [封面与六平台文案](https://dososo.github.io/huawei-phone-journey/promotion.html) · [1106条资料目录](https://dososo.github.io/huawei-phone-journey/catalog.html) · [创作技能源码](skills/huawei-phone-journey/SKILL.md)
+[观看成片](https://dososo.github.io/huawei-phone-journey/watch.html) · [1106条资料目录](https://dososo.github.io/huawei-phone-journey/catalog.html) · [创作技能源码](skills/huawei-phone-journey/SKILL.md)
 
 这是一套可本地运行的网页动画与创作技能。新版完整影片保留原 **451 个华为节点**，按年份与发布月份补入 **105 个分家前荣耀节点**，共 **556 个展示节点**、9章、**11分24.9秒**，1920×1080、原生60fps。资料目录保留 **1106 条记录**。本轮荣耀补采另有48项缺图或身份待核条目，未计入影片。记录可能包含版本、别名、日期推断与待核项；这些数字不代表独立型号全部收齐，也不代表所有图片均为高清或已获再分发授权。
 
-新版成片、九个分章与全新三种比例封面通过作品网站与 v2.0.0 Release 提供；仓库同时开放源码、来源索引、时间轴和乐谱事件。完整手机原图库与商业采样库不随源码分发。本地源码预览未导入图片时会明确标注缺图，仍可用于检查角色、布局和时间轴。
+新版成片、九个分章与章节索引通过作品网站与 v2.0.0 Release 提供；仓库同时开放源码、来源索引、时间轴和乐谱事件。完整手机原图库与商业采样库不随源码分发。本地源码预览未导入图片时会明确标注缺图，仍可用于检查角色、布局和时间轴。
 
-## 观看与发布素材
+## 观看与项目资料
 
 - [作品首页](https://dososo.github.io/huawei-phone-journey/)：作品简介与各入口。
 - [九章成片](https://dososo.github.io/huawei-phone-journey/watch.html)：556展示节点、11:24.9、1080p/60fps；支持章节定位、“暂停看清”与分章下载。
-- [封面与文案](https://dososo.github.io/huawei-phone-journey/promotion.html)：3:4、4:3、16:9封面及六平台成品文案；也可阅读[文案文档](docs/发布文案.md)。
 - [资料目录](https://dososo.github.io/huawei-phone-journey/catalog.html)：1106条记录，保留来源、日期推断与待核标记。
-- [下载新版完整影片](https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/huawei-honor-phone-journey-full.mp4) · [新版全部素材与九个分章](https://github.com/dososo/huawei-phone-journey/releases/tag/v2.0.0) · [原版存档](https://github.com/dososo/huawei-phone-journey/releases/tag/v1.0.0)。
+- [下载新版完整影片](https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/huawei-honor-phone-journey-full.mp4) · [新版影片与九个分章](https://github.com/dososo/huawei-phone-journey/releases/tag/v2.0.0) · [原版存档](https://github.com/dososo/huawei-phone-journey/releases/tag/v1.0.0)。
 
 观看和试听无需安装开发环境。公开成品不意味着其中手机图片、音源或商标获得统一再使用许可，详见[素材许可范围](ASSET-LICENSE.md)。
 
@@ -114,18 +113,14 @@ npm run render
 ├── docs/
 │   ├── 设计与原理.md
 │   ├── 使用与复现.md
-│   ├── 发布文案.md
 │   └── 新版说明.md
 ├── site/
 │   ├── index.html               作品首页
 │   ├── watch.html               完整成片与九章定位
 │   ├── edition.json             新版公开媒体与章节索引
-│   ├── promotion.html           封面与文案
 │   ├── catalog.html             资料目录
 │   └── assets/
-│       ├── cover-3x4.png
-│       ├── cover-4x3.png
-│       └── cover-16x9.png
+│       └── film-preview.jpg      公开影片真实帧预览
 ├── scripts/
 │   ├── build_site.py              成品网站白名单构建
 │   └── release_check.py          公开文件与敏感信息检查
@@ -160,7 +155,7 @@ npm run render
         └── audio-bank.json      用户音源配置模板，不含音频
 ```
 
-技能所需的运行代码和数据都位于技能目录内，可完整复制该目录使用。`site` 保存公开作品页面与封面，影片和九个分章作为 Release 附件。自行运行产生的图片、音源库、音频和构建目录属于本地文件；不要将私人路径、密钥或未获许可的素材提交到源码仓库。
+技能所需的运行代码和数据都位于技能目录内，可完整复制该目录使用。`site` 保存公开作品页面与成片实帧预览，影片和九个分章作为 Release 附件。个人发布封面与平台文案不随公开项目分发。自行运行产生的图片、音源库、音频和构建目录属于本地文件；不要将私人路径、密钥或未获许可的素材提交到源码仓库。
 
 ## 常见问题
 

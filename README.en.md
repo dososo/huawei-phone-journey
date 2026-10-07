@@ -4,19 +4,18 @@
 
 One character travels through 22 years of phone design, 2004–2026. **A nine-chapter retrospective of Huawei and pre-split Honor.**
 
-[![22 Years of Huawei Phone Design: click to watch the nine-chapter film](site/assets/cover-16x9.png)](https://dososo.github.io/huawei-phone-journey/watch.html)
+[![22 Years of Huawei Phone Design: click to watch the nine-chapter film](site/assets/film-preview.jpg)](https://dososo.github.io/huawei-phone-journey/watch.html)
 
-[Watch the Film](https://dososo.github.io/huawei-phone-journey/watch.html) · [Covers and Platform Copy](https://dososo.github.io/huawei-phone-journey/promotion.html) · [1106-Record Catalog](https://dososo.github.io/huawei-phone-journey/catalog.html) · [Creation Skill Source (Chinese)](skills/huawei-phone-journey/SKILL.md)
+[Watch the Film](https://dososo.github.io/huawei-phone-journey/watch.html) · [1106-Record Catalog](https://dososo.github.io/huawei-phone-journey/catalog.html) · [Creation Skill Source (Chinese)](skills/huawei-phone-journey/SKILL.md)
 
 This project provides a local web animation and a creation skill. The new film keeps **451 Huawei entries** and inserts **105 pre-split Honor entries** by year and release month: **556 display entries**, nine chapters, **11 minutes 24.9 seconds**, 1920×1080, native 60 fps. The public catalog contains **1106 records**. A further 48 records from the Honor research lack a usable image or await identity checks and are not counted in the film. Records may include variants, aliases, inferred dates and items awaiting verification. These counts do not mean that every distinct model has been collected, or that every image is high resolution or licensed for redistribution.
 
-The new full film, nine chapter files and newly composed covers in three aspect ratios are available through the project website and v2.0.0 Release. The repository also provides source code, source references, a timeline and score events. The complete original phone-image library and commercial sample library are not distributed with the source. Without imported images, the local source preview clearly displays missing-image notices and can still be used to inspect the character, layout and timeline.
+The new full film, nine chapter files and chapter index are available through the project website and v2.0.0 Release. The repository also provides source code, source references, a timeline and score events. The complete original phone-image library and commercial sample library are not distributed with the source. Without imported images, the local source preview clearly displays missing-image notices and can still be used to inspect the character, layout and timeline.
 
-## Watch and Publishing Materials
+## Watch and Project Resources
 
 - [Project Home](https://dososo.github.io/huawei-phone-journey/): an introduction and links to each part of the project.
 - [Nine-Chapter Film](https://dososo.github.io/huawei-phone-journey/watch.html): 556 display entries, nine chapters, 11:24.9, 1080p/60 fps; chapter seeking, clear paused frames and chapter downloads.
-- [Covers and Copy](https://dososo.github.io/huawei-phone-journey/promotion.html): 3:4, 4:3 and 16:9 covers with finished copy for six platforms. The [copy document](docs/发布文案.md) contains Chinese, English and bilingual versions as appropriate for each platform.
 - [Catalog](https://dososo.github.io/huawei-phone-journey/catalog.html): 1106 records with sources, inferred dates and verification markers retained.
 - [Download the New Film](https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/huawei-honor-phone-journey-full.mp4) · [New Release and Nine Chapter Files](https://github.com/dososo/huawei-phone-journey/releases/tag/v2.0.0) · [Original Edition](https://github.com/dososo/huawei-phone-journey/releases/tag/v1.0.0).
 
@@ -114,18 +113,14 @@ The character's materials are artistic interpretations, not measurements of a ph
 ├── docs/
 │   ├── 设计与原理.md
 │   ├── 使用与复现.md
-│   ├── 发布文案.md
 │   └── 新版说明.md
 ├── site/
 │   ├── index.html               Project home
 │   ├── watch.html               Full film and chapter seeking
 │   ├── edition.json             Edition and public media index
-│   ├── promotion.html           Covers and copy
 │   ├── catalog.html             Catalog
 │   └── assets/
-│       ├── cover-3x4.png
-│       ├── cover-4x3.png
-│       └── cover-16x9.png
+│       └── film-preview.jpg      Actual frame from the public film
 ├── scripts/
 │   ├── build_site.py              Allowlisted project-site build
 │   └── release_check.py          Public-file and sensitive-information checks
@@ -160,7 +155,7 @@ The character's materials are artistic interpretations, not measurements of a ph
         └── audio-bank.json      User sample-bank template, without audio
 ```
 
-All runtime code and data needed by the skill live inside the skill directory, which can be copied in full. `site` contains the public project pages and covers; the full film and nine chapter files are Release attachments. Images, sample libraries, audio and build directories generated during your own use are local files. Do not commit private paths, credentials or assets without permission to the source repository.
+All runtime code and data needed by the skill live inside the skill directory, which can be copied in full. `site` contains the public project pages and an actual film-frame preview; the full film and nine chapter files are Release attachments. Personal publishing covers and platform copy are not distributed with the public project. Images, sample libraries, audio and build directories generated during your own use are local files. Do not commit private paths, credentials or assets without permission to the source repository.
 
 ## Frequently Asked Questions
 
