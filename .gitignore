@@ -11,3 +11,5 @@ skills/huawei-phone-journey/renders/
 .env
 .env.*
 local-*
+
+.hyperframes/

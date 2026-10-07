@@ -17,6 +17,18 @@ spec.loader.exec_module(audio)
 
 
 class AudioTests(unittest.TestCase):
+    def test_current_score_timing_and_public_scope(self):
+        score = json.loads(audio.DEFAULT_SCORE.read_text())
+        self.assertEqual(score['duration'], 684.9)
+        self.assertEqual(score['bpm'], 80)
+        self.assertEqual(len(score['events']), 2427)
+        self.assertEqual(len(score['cues']), 19)
+        self.assertEqual(len(score['chapters']), 9)
+        self.assertTrue(all(0 <= e['时间'] < score['duration'] for e in score['events']))
+        self.assertTrue(all(0 <= c['开始'] <= c['峰值'] <= c['结束'] <= score['duration'] for c in score['cues']))
+        self.assertNotIn('音源', score)
+        self.assertTrue(all('file' not in e and '路径' not in e for e in score['events']))
+
     def fixture(self, root):
         samples = root / "samples"
         samples.mkdir()

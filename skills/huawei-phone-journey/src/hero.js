@@ -32,7 +32,7 @@
         c.strokeStyle='rgba(225,255,255,.36)';c.lineWidth=.8;c.stroke(q);
       }
     } else if(material==='metal') {
-      ['#202832','#d8dedc','#fafdf5','#5f666b','#b6bec0'].forEach((v,i)=>grad.addColorStop(i/4,v));
+      ['#202832','#d8dedc',color,'#5f666b','#b6bec0'].forEach((v,i)=>grad.addColorStop(i/4,v));
       c.fillStyle=grad;c.fill(p);c.strokeStyle='rgba(25,29,34,.11)';c.lineWidth=.5;
       for(let y=-180;y<180;y+=3){c.beginPath();c.moveTo(-300,y);c.lineTo(250,y+40);c.stroke();}
     } else if(material==='pearl') {
@@ -94,6 +94,11 @@
       c.beginPath();c.moveTo(-71,-22);c.lineTo(12,-40);c.lineTo(51,-32);c.stroke();
     }
     c.restore();
+    // 独立人物的保守轮廓边界，包含关节、波动披风及内部旋转。
+    const bob=Math.sin(t*1.7)*3,angle=-.035,cos=Math.cos(angle),sin=Math.sin(angle);
+    const corners=[[-286,-99],[-286,94],[248,-99],[248,94]].map(([px,py])=>[px*cos-py*sin,px*sin+py*cos]);
+    return {bounds:[x+Math.min(...corners.map(p=>p[0]))*scale,y+bob+Math.min(...corners.map(p=>p[1]))*scale,
+      x+Math.max(...corners.map(p=>p[0]))*scale,y+bob+Math.max(...corners.map(p=>p[1]))*scale]};
   }
   window.PreviewHero={draw};
 })();

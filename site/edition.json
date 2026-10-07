@@ -1,0 +1,185 @@
+{
+  "version": "2.0.0",
+  "date": "2026-10-07",
+  "duration": 684.9,
+  "fps": 60,
+  "displayEntries": 556,
+  "huawei": 451,
+  "preSplitHonor": 105,
+  "scope": "华为与分家前荣耀；展示节点包括地区、配置和别名",
+  "fullVideo": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/huawei-honor-phone-journey-full.mp4",
+  "videoSHA256": "98e1a642751208151234c8404d60573874f1af7b5c4452ed34a09e90fdddac94",
+  "chapters": [
+    {
+      "index": 0,
+      "number": 1,
+      "title": "发端：掌中微光",
+      "era": "2004—2009",
+      "yearRange": [
+        2004,
+        2009
+      ],
+      "start": 3.2,
+      "cardStart": 3.2,
+      "entryFirst": 0,
+      "entryLast": 55,
+      "count": 56,
+      "cardEnd": 5.4,
+      "journeyStart": 5.4,
+      "end": 68.1,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-01.mp4"
+    },
+    {
+      "index": 1,
+      "number": 2,
+      "title": "启程：智能涌现",
+      "era": "2010—2012",
+      "yearRange": [
+        2010,
+        2012
+      ],
+      "start": 68.1,
+      "cardStart": 68.1,
+      "entryFirst": 56,
+      "entryLast": 140,
+      "count": 85,
+      "cardEnd": 70.3,
+      "journeyStart": 70.3,
+      "end": 167.2,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-02.mp4"
+    },
+    {
+      "index": 2,
+      "number": 3,
+      "title": "成形：线条与光泽",
+      "era": "2013—2015",
+      "yearRange": [
+        2013,
+        2015
+      ],
+      "start": 167.2,
+      "cardStart": 167.2,
+      "entryFirst": 141,
+      "entryLast": 220,
+      "count": 80,
+      "cardEnd": 169.4,
+      "journeyStart": 169.4,
+      "end": 263.0,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-03.mp4"
+    },
+    {
+      "index": 3,
+      "number": 4,
+      "title": "开阔：影像视野",
+      "era": "2016—2018",
+      "yearRange": [
+        2016,
+        2018
+      ],
+      "start": 263.0,
+      "cardStart": 263.0,
+      "entryFirst": 221,
+      "entryLast": 321,
+      "count": 101,
+      "cardEnd": 265.2,
+      "journeyStart": 265.2,
+      "end": 386.3,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-04.mp4"
+    },
+    {
+      "index": 4,
+      "number": 5,
+      "title": "流光：渐变玻璃",
+      "era": "2019—2020",
+      "yearRange": [
+        2019,
+        2020
+      ],
+      "start": 386.3,
+      "cardStart": 386.3,
+      "entryFirst": 322,
+      "entryLast": 427,
+      "count": 106,
+      "cardEnd": 388.5,
+      "journeyStart": 388.5,
+      "end": 513.4,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-05.mp4"
+    },
+    {
+      "index": 5,
+      "number": 6,
+      "title": "凝聚：金属与双圆",
+      "era": "2021—2022",
+      "yearRange": [
+        2021,
+        2022
+      ],
+      "start": 513.4,
+      "cardStart": 513.4,
+      "entryFirst": 428,
+      "entryLast": 456,
+      "count": 29,
+      "cardEnd": 515.6,
+      "journeyStart": 515.6,
+      "end": 550.9,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-06.mp4"
+    },
+    {
+      "index": 6,
+      "number": 7,
+      "title": "呼吸：贝母与留白",
+      "era": "2023—2023",
+      "yearRange": [
+        2023,
+        2023
+      ],
+      "start": 550.9,
+      "cardStart": 550.9,
+      "entryFirst": 457,
+      "entryLast": 481,
+      "count": 25,
+      "cardEnd": 553.1,
+      "journeyStart": 553.1,
+      "end": 584.7,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-07.mp4"
+    },
+    {
+      "index": 7,
+      "number": 8,
+      "title": "展开：折叠与纹理",
+      "era": "2024—2025",
+      "yearRange": [
+        2024,
+        2025
+      ],
+      "start": 584.7,
+      "cardStart": 584.7,
+      "entryFirst": 482,
+      "entryLast": 531,
+      "count": 50,
+      "cardEnd": 586.9,
+      "journeyStart": 586.9,
+      "end": 646.0,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-08.mp4"
+    },
+    {
+      "index": 8,
+      "number": 9,
+      "title": "归航：当代与远景",
+      "era": "2026—2026",
+      "yearRange": [
+        2026,
+        2026
+      ],
+      "start": 646.0,
+      "cardStart": 646.0,
+      "entryFirst": 532,
+      "entryLast": 555,
+      "count": 24,
+      "cardEnd": 648.2,
+      "journeyStart": 648.2,
+      "end": 678.7,
+      "video": "https://github.com/dososo/huawei-phone-journey/releases/download/v2.0.0/chapter-09.mp4"
+    }
+  ]
+}

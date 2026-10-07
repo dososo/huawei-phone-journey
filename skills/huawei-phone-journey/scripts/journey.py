@@ -2,6 +2,7 @@
 """资料检查、真实图片导入、本地播放和可导出工程构建。"""
 import argparse
 import json
+import re
 import shutil
 import urllib.request
 from functools import partial
@@ -33,14 +34,21 @@ def validate():
         raise ValueError('年月排序或月份范围错误')
     if len(plan['chapters']) != 9 or plan['chapterCount'] != 9:
         raise ValueError('九章数量不正确')
-    segments = plan['segments']
-    if segments[0]['startFrame'] != 0 or segments[-1]['endFrame'] != plan['totalFrames']:
+    spans = [(0, plan['introEnd']), (plan['outroStart'], plan['duration'])]
+    spans += [(c['cardStart'], c['cardEnd']) for c in plan['chapters']]
+    spans += [(e['start'], e['end']) for e in plan['entries']]
+    spans.sort()
+    if spans[0][0] != 0 or spans[-1][1] != plan['duration']:
         raise ValueError('时间线头尾不完整')
-    if any(a['endFrame'] != b['startFrame'] for a, b in zip(segments, segments[1:])):
+    if any(end <= start or any(abs(t * plan['fps'] - round(t * plan['fps'])) > 1e-6 for t in (start, end)) for start, end in spans):
+        raise ValueError('时间段长度或帧边界错误')
+    if any(abs(a[1] - b[0]) > 1e-7 for a, b in zip(spans, spans[1:])):
         raise ValueError('时间线存在间隙或重叠')
+    if any((models[i]['release']['year'], models[i]['release']['month']) != (models[i]['year'], models[i]['month']) for i in ids):
+        raise ValueError('展示年月与资料年月不一致')
     if abs(plan['totalFrames'] / plan['fps'] - plan['duration']) > 1e-7 or score['duration'] != plan['duration']:
         raise ValueError('音画总时长不一致')
-    result = {'资料记录': len(models), '游历节点': len(ids), '章节': 9, '秒': plan['duration'], '帧': plan['totalFrames'], '乐谱事件': len(score['events'])}
+    result = {'资料记录': len(models), '游历节点': len(ids), '章节': 9, '秒': plan['duration'], '帧率': plan['fps'], '帧': plan['totalFrames'], '乐谱事件': len(score['events'])}
     print(json.dumps(result, ensure_ascii=False))
     return result
 
@@ -141,12 +149,13 @@ def build(args):
     dest = Path(args.out).resolve()
     if dest == ROOT or dest in ROOT.parents:
         raise ValueError('构建输出必须为独立子目录')
-    duration = read('data/timeline.json')['duration']
+    plan = read('data/timeline.json')
+    duration, fps = plan['duration'], plan['fps']
     length = args.seconds if args.seconds is not None else duration - args.start
     if args.start < 0 or length <= 0 or args.start + length > duration + 1e-7:
         raise ValueError('导出时间段越界')
-    if abs(length * 30 - round(length * 30)) > 1e-6:
-        raise ValueError('导出秒数须与30fps帧边界对齐')
+    if any(abs(t * fps - round(t * fps)) > 1e-6 for t in (args.start, length)):
+        raise ValueError('导出秒数须与时间线帧边界对齐')
     dest.mkdir(parents=True, exist_ok=True)
     for directory in ['src', 'data']:
         shutil.copytree(ROOT / directory, dest / directory, dirs_exist_ok=True)
@@ -160,9 +169,9 @@ def build(args):
     save(dest / 'assets/inventory.json', registered)
     page = (ROOT / 'index.html').read_text()
     page = page.replace('<!--RENDER_LIBRARY-->', '<script src="vendor/gsap.min.js"></script><script>window.RenderSettings=' + json.dumps({'start': args.start, 'duration': length}) + ';</script>')
-    page = page.replace('<body>', '<body class="render">').replace('data-duration="772.7"', f'data-duration="{length}"')
-    page = page.replace('<main>', f'<main data-composition-id="phone-journey" data-start="0" data-width="1920" data-height="1080" data-duration="{length}" data-fps="30">')
-    page = page.replace(f'id="root" data-composition-id="phone-journey" data-width="1920" data-height="1080" data-duration="{length}" data-fps="30"', 'id="root"')
+    page = re.sub(r'data-duration="[^"]+"', f'data-duration="{length}"', page.replace('<body>', '<body class="render">'))
+    page = page.replace('<main>', f'<main data-composition-id="phone-journey" data-start="0" data-width="1920" data-height="1080" data-duration="{length}" data-fps="{fps}">')
+    page = page.replace(f'id="root" data-composition-id="phone-journey" data-width="1920" data-height="1080" data-duration="{length}" data-fps="{fps}"', 'id="root"')
     page = page.replace('<script src="src/app.js"></script>', '<script>' + (ROOT / 'src/app.js').read_text() + '</script>')
     page = page.replace('<script src="src/player.js"></script>', '')
     if args.audio:
@@ -173,12 +182,12 @@ def build(args):
             raise ValueError('音轨格式须为wav、mp3或m4a')
         target = dest / 'assets' / ('soundtrack' + sound.suffix.lower())
         shutil.copy2(sound, target)
-        audio = f'<audio class="clip" src="assets/{target.name}" data-start="0" data-duration="{length}" data-track-index="10" data-volume="1"></audio>'
+        audio = f'<audio id="journey-audio" class="clip" src="assets/{target.name}" data-start="0" data-duration="{length}" data-track-index="10" data-volume="1"></audio>'
         page = page.replace('<!--RENDER_AUDIO-->', audio)
     (dest / 'index.html').write_text(page)
     shutil.copy2(ROOT / 'hyperframes.json', dest / 'hyperframes.json')
-    save(dest / 'build.json', {'start': args.start, 'duration': length, 'fps': 30, 'frames': round(length * 30), 'loadedImages': len(registered), 'imageFilesIncludedInRepository': False})
-    print(json.dumps({'工程': dest.name, '秒': length, '帧': round(length * 30), '真实图片': len(registered)}, ensure_ascii=False))
+    save(dest / 'build.json', {'start': args.start, 'duration': length, 'fps': fps, 'frames': round(length * fps), 'loadedImages': len(registered), 'imageFilesIncludedInRepository': False})
+    print(json.dumps({'工程': dest.name, '秒': length, '帧率': fps, '帧': round(length * fps), '真实图片': len(registered)}, ensure_ascii=False))
 
 
 def main(argv=None):

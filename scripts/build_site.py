@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE_FILES = [
-    "index.html", "watch.html", "promotion.html", "catalog.html",
+    "index.html", "watch.html", "promotion.html", "catalog.html", "edition.json",
     "assets/cover-3x4.png", "assets/cover-4x3.png", "assets/cover-16x9.png",
 ]
 
@@ -22,7 +22,7 @@ def build(destination):
     (destination / "data").mkdir(exist_ok=True)
     shutil.copyfile(ROOT / "skills/huawei-phone-journey/data/catalog.json", destination / "data/catalog.json")
     shutil.copyfile(ROOT / "docs/发布文案.md", destination / "copy.md")
-    print("已构建9个公开文件；没有复制原图库、音源库或阶段目录。")
+    print("已构建10个公开文件；没有复制原图库、音源库或阶段目录。")
 
 
 if __name__ == "__main__":

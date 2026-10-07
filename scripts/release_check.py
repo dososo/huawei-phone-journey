@@ -34,7 +34,7 @@ def allowed(name):
     p = PurePosixPath(name)
     if p.is_absolute() or ".." in p.parts or any(x.lower() in PRIVATE_PARTS for x in p.parts):
         return False
-    if name == "README.en.md" or name in SITE_HTML or name in PNG_FILES:
+    if name in {"README.en.md", "site/edition.json"} or name in SITE_HTML or name in PNG_FILES:
         return True
     if len(p.parts) == 1:
         return name == ".gitignore" or (p.stem in ROOT_NAMES and p.suffix in {"", ".md", ".txt"})
