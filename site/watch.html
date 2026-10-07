@@ -3,10 +3,11 @@
 <script>
 const data=JSON.parse(document.querySelector('#chapter-data').textContent),film=document.querySelector('#film'),status=document.querySelector('#status'),nav=document.querySelector('#chapters'),skip=document.querySelector('#skip-card');
 const format=t=>{const n=Math.floor(t);return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');};
-const buttons=data.chapters.map(ch=>{const b=document.createElement('button');b.disabled=true;b.setAttribute('aria-pressed','false');b.dataset.start=ch.start;const title=document.createElement('span');title.textContent=ch.number+' '+ch.title;const d=document.createElement('small');d.textContent=format(ch.start)+' · '+(ch.yearRange[0]===ch.yearRange[1]?ch.yearRange[0]:ch.era)+' · '+ch.count+'个节点';b.append(title,d);nav.append(b);b.addEventListener('click',()=>{film.pause();film.controls=true;film.currentTime=skip.checked?ch.journeyStart:ch.start;film.play().catch(()=>{status.textContent='章节已定位，请点击播放。';});});return b;});
+const buttons=data.chapters.map(ch=>{const b=document.createElement('button');b.disabled=true;b.setAttribute('aria-pressed','false');b.dataset.start=ch.start;const title=document.createElement('span');title.textContent=ch.number+' '+ch.title;const d=document.createElement('small');d.textContent=format(ch.start)+' · '+(ch.yearRange[0]===ch.yearRange[1]?ch.yearRange[0]:ch.era)+' · '+ch.count+'个节点';b.append(title,d);nav.append(b);b.addEventListener('click',()=>{film.pause();film.controls=true;film.currentTime=skip.checked?ch.journeyStart:ch.start;film.play().catch(()=>{if(film.paused)status.textContent='章节已定位，请点击播放。';});});return b;});
+film.addEventListener('playing',()=>{status.textContent='正在播放 · 可按章切换或暂停辨认型号与月份';});
 film.addEventListener('loadedmetadata',()=>{buttons.forEach(b=>b.disabled=false);status.textContent='完整影片已就绪 · '+format(film.duration)+' · 可按章观看';});
 film.addEventListener('error',()=>{status.textContent='当前网络无法读取影片，请使用下载链接或到GitHub Release观看。';buttons.forEach(b=>b.disabled=true);});
 film.addEventListener('timeupdate',()=>data.chapters.forEach((ch,i)=>buttons[i].setAttribute('aria-pressed',String(film.currentTime>=ch.start&&film.currentTime<ch.end))));
 document.querySelector('#pause-clear').addEventListener('click',()=>{film.pause();film.controls=false;status.textContent='已暂停，播放控件收起，可辨认型号与月份。';});
-document.querySelector('#resume').addEventListener('click',()=>{film.controls=true;film.play().catch(()=>{status.textContent='请点击影片播放按钮。';});});
+document.querySelector('#resume').addEventListener('click',()=>{film.controls=true;film.play().catch(()=>{if(film.paused)status.textContent='请点击影片播放按钮。';});});
 </script></body></html>
